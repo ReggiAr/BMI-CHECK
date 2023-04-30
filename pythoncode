@@ -1,0 +1,98 @@
+#Created By Reggi Aryunadi
+#30 April 2023
+#github.com/Reggi Ar
+#reggi.aryunadi@gmail.com
+
+import sys
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
+import sys
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLineEdit
+
+class BMICalculator(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("BMI Calculator")
+        self.setGeometry(300, 300, 300, 200)
+        self.setStyleSheet("background-color:#F5E1E1;")
+
+        layout = QVBoxLayout()
+
+        self.age_label = QLabel("Age:")
+        self.age_input = QLineEdit()
+        self.age_input.setStyleSheet("background-color: #8AC6A7;")
+        self.age_input.setFont(QFont("Helvetica",12))
+
+        self.gender_label = QLabel("Gender:")
+        self.gender_input = QComboBox()
+        self.gender_input.addItems(["male","female"])
+        self.gender_input.setFont(QFont("Helvetica",12))
+        self.gender_input.setStyleSheet("background-color: #8AC6A7;")
+
+        self.weight_label = QLabel("Weight (kg):")
+        self.weight_input = QLineEdit()
+        self.weight_input.setStyleSheet("background-color: #8AC6A7;")
+        self.weight_input.setFont(QFont("Helvetica",12))
+
+        self.height_label = QLabel("Height (cm):")
+        self.height_input = QLineEdit()
+        self.height_input.setStyleSheet("background-color: #8AC6A7;")
+        self.height_input.setFont(QFont("Helvetica",12))
+
+        self.calculate_button = QPushButton("Calculate")
+        self.calculate_button.clicked.connect(self.calculate_bmi)
+        self.calculate_button.setStyleSheet("background-color:green;font-weight:bold")
+        self.calculate_button.setFont(QFont("Helvetica",15))
+
+        layout.addWidget(self.age_label)
+        layout.addWidget(self.age_input)
+        layout.addWidget(self.gender_label)
+        layout.addWidget(self.gender_input)
+        layout.addWidget(self.weight_label)
+        layout.addWidget(self.weight_input)
+        layout.addWidget(self.height_label)
+        layout.addWidget(self.height_input)
+        layout.addWidget(self.calculate_button)
+
+        self.setLayout(layout)
+
+    def calculate_bmi(self):
+        age = int(self.age_input.text())
+        gender = self.gender_input.currentText()
+        weight = float(self.weight_input.text())
+        height = float(self.height_input.text()) / 100  # Convert cm to meters
+
+        bmi = weight / (height * height)
+
+        category = ""
+        if age < 18:
+            category = "BMI categories for children and teens do not apply."
+        elif gender.lower() == "male":
+            if bmi < 20:
+                category = "Underweight"
+            elif bmi < 25:
+                category = "Normal weight"
+            elif bmi < 30:
+                category = "Overweight"
+            else:
+                category = "Obese"
+        elif gender.lower() == "female":
+            if bmi < 19:
+                category = "Underweight"
+            elif bmi < 24:
+                category = "Normal weight"
+            elif bmi < 30:
+                category = "Overweight"
+            else:
+                category = "Obese"
+
+        QMessageBox.information(self, "BMI Result", f"Your BMI is: {bmi:.2f}\nCategory: {category}")
+        
+
+
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    window = BMICalculator()
+    window.show()
+    sys.exit(app.exec_())
